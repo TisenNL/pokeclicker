@@ -39,10 +39,19 @@
   }
 
   const check = setInterval(() => {
-    if (window.PokeBot?.registrar) {
+    if (window.PokeBot?.registrar && document.getElementById('bot-btn-container')) {
       clearInterval(check);
       window.PokeBot.registrar({ key: 'farm', label: '🌱 Farm', shortcut: 'Ctrl+4', toggle, state: () => running });
     }
   }, 200);
+  
+  // Se ainda não conseguiu registrar em 30 segundos, tenta forçar
+  setTimeout(() => {
+    if (!window.PokeBot?.modules?.farm) {
+      if (window.PokeBot?.registrar) {
+        window.PokeBot.registrar({ key: 'farm', label: '🌱 Farm', shortcut: 'Ctrl+4', toggle, state: () => running });
+      }
+    }
+  }, 30000);
 
 })();

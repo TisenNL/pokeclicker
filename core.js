@@ -46,8 +46,10 @@
 
   // Registro global de módulos
   window.PokeBot = { sleep, simulateClick, showToast, modules: {} };
-
+  
+  // Cria o painel IMEDIATAMENTE (não espera o App)
   function criarPainel() {
+    
     const btnMostrar = document.createElement('button');
     btnMostrar.textContent = '🤖';
     btnMostrar.style.cssText = `
@@ -112,6 +114,14 @@
 
     window.PokeBot.painel = painel;
     window.PokeBot.btnContainer = btnContainer;
+    console.log('PokéBot: Painel criado com sucesso!');
+  }
+
+  // Tenta criar o painel assim que possível
+  if (document.body) {
+    criarPainel();
+  } else {
+    document.addEventListener('DOMContentLoaded', criarPainel);
   }
 
   // Função usada pelos módulos para se registrar no painel
@@ -140,23 +150,24 @@
     });
   };
 
+  // Aguarda App e depois anuncia que está pronto
   function waitForApp(callback) {
     const check = setInterval(() => {
       try {
-        if (typeof App !== 'undefined' && App.game && App.game.breeding) {
+        if (typeof App !== 'undefined' && App.game) {
+          console.log('PokéBot: App encontrado!');
           clearInterval(check);
-          callback();
+          setTimeout(callback, 100);
         }
-      } catch(e) {}
+      } catch(e) {
+        console.log('PokéBot: Aguardando App...');
+      }
     }, 1000);
   }
 
   waitForApp(() => {
-    criarPainel();
-    // Aguarda módulos carregarem e se registrarem
-    setTimeout(() => {
-      Object.values(window.PokeBot.pendingModules || {}).forEach(fn => fn());
-    }, 500);
+    showToast('🤖 PokéBot Core carregado!');
+    console.log('PokéBot Core: Sistema pronto para módulos');
   });
 
 })();

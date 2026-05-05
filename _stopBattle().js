@@ -49,7 +49,17 @@
 
   // Aguarda Core carregar
   const check = setInterval(() => {
-    if (window.PokeBot?.registrar) { clearInterval(check); init(); }
+    if (window.PokeBot?.registrar && document.getElementById('bot-btn-container')) { 
+      clearInterval(check); 
+      init(); 
+    }
   }, 200);
+  
+  // Se ainda não conseguiu registrar em 30 segundos, tenta forçar
+  setTimeout(() => {
+    if (!window.PokeBot?.modules?.battle) {
+      if (window.PokeBot?.registrar) init();
+    }
+  }, 30000);
 
 })();

@@ -123,10 +123,19 @@
   }
 
   const check = setInterval(() => {
-    if (window.PokeBot?.registrar) {
+    if (window.PokeBot?.registrar && document.getElementById('bot-btn-container')) {
       clearInterval(check);
       window.PokeBot.registrar({ key: 'dungeon', label: '🏰 Dungeon', shortcut: 'Ctrl+3', toggle, state: () => running });
     }
   }, 200);
+  
+  // Se ainda não conseguiu registrar em 30 segundos, tenta forçar
+  setTimeout(() => {
+    if (!window.PokeBot?.modules?.dungeon) {
+      if (window.PokeBot?.registrar) {
+        window.PokeBot.registrar({ key: 'dungeon', label: '🏰 Dungeon', shortcut: 'Ctrl+3', toggle, state: () => running });
+      }
+    }
+  }, 30000);
 
 })();
